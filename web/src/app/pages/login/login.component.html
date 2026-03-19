@@ -1,0 +1,47 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-brand">
+      <mat-icon class="brand-logo">apartment</mat-icon>
+      <h1>REAMT</h1>
+      <p>Real Estate Account Monitoring & Tracker</p>
+    </div>
+
+    <form (ngSubmit)="onLogin()" class="login-form">
+      @if (error()) {
+        <div class="error-message">
+          <mat-icon>error_outline</mat-icon>
+          {{ error() }}
+        </div>
+      }
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput [(ngModel)]="username" name="username" autocomplete="username">
+        <mat-icon matPrefix>person</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput [(ngModel)]="password" name="password"
+               [type]="hidePassword ? 'password' : 'text'" autocomplete="current-password">
+        <mat-icon matPrefix>lock</mat-icon>
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" class="login-btn"
+              [disabled]="loading()">
+        @if (loading()) {
+          <mat-spinner diameter="20"></mat-spinner>
+        } @else {
+          Sign In
+        }
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <small>Myvan Properties and Development Inc.</small>
+    </div>
+  </div>
+</div>

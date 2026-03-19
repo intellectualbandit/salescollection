@@ -1,0 +1,137 @@
+<div class="page-header">
+  <h1>Project Reports</h1>
+  <p>Detailed project insights with inventory status and account processing breakdowns.</p>
+</div>
+
+<div class="toolbar">
+  <mat-form-field appearance="outline" class="project-select">
+    <mat-label>Project</mat-label>
+    <mat-select [value]="selectedProjectId()" (selectionChange)="onProjectChange($event.value)">
+      <mat-option [value]="undefined">All Projects</mat-option>
+      @for (p of projects(); track p.projectId) {
+        <mat-option [value]="p.projectId">{{ p.projectName }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else if (summary()) {
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <div class="label">Total Clients</div>
+      <div class="value">{{ summary()!.totalClients }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Active</div>
+      <div class="value">{{ summary()!.activeClients }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Resolved</div>
+      <div class="value text-success">{{ summary()!.resolvedClients }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Cancellations</div>
+      <div class="value text-critical">{{ summary()!.cancellationClients }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Avg. Delayed Days</div>
+      <div class="value">{{ summary()!.averageDelayedDays | number:'1.0-0' }}</div>
+    </div>
+  </div>
+
+  <hr class="divider-accent">
+
+  @if (breakdown()) {
+    <div class="report-grid">
+      <!-- Delay Reasons Table -->
+      <div class="report-section">
+        <h3>Delay Reasons Analysis</h3>
+        <div class="data-table-container">
+          <table class="report-table">
+            <thead>
+              <tr><th>Reason</th><th>Count</th></tr>
+            </thead>
+            <tbody>
+              @for (item of breakdown()!.byDelayReason; track item.label) {
+                <tr><td>{{ item.label }}</td><td>{{ item.count }}</td></tr>
+              }
+              @if (breakdown()!.byDelayReason.length === 0) {
+                <tr><td colspan="2" class="empty">No data</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pipeline Distribution -->
+      <div class="report-section">
+        <h3>Pipeline Distribution</h3>
+        <div class="data-table-container">
+          <table class="report-table">
+            <thead>
+              <tr><th>Stage</th><th>Count</th></tr>
+            </thead>
+            <tbody>
+              @for (item of breakdown()!.byStage; track item.label) {
+                <tr><td>{{ item.label }}</td><td>{{ item.count }}</td></tr>
+              }
+              @if (breakdown()!.byStage.length === 0) {
+                <tr><td colspan="2" class="empty">No data</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Financing Mix -->
+      <div class="report-section">
+        <h3>Financing Mix</h3>
+        <div class="data-table-container">
+          <table class="report-table">
+            <thead>
+              <tr><th>Type</th><th>Count</th></tr>
+            </thead>
+            <tbody>
+              @for (item of breakdown()!.byFinancingMix; track item.label) {
+                <tr><td>{{ item.label }}</td><td>{{ item.count }}</td></tr>
+              }
+              @if (breakdown()!.byFinancingMix.length === 0) {
+                <tr><td colspan="2" class="empty">No data</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Resolution Analysis -->
+      <div class="report-section">
+        <h3>Resolution Analysis</h3>
+        <div class="data-table-container">
+          <table class="report-table">
+            <thead>
+              <tr><th>Financing Type</th><th>Avg. Days to Resolve</th></tr>
+            </thead>
+            <tbody>
+              @for (item of breakdown()!.byResolution; track item.financingType) {
+                <tr><td>{{ item.financingType }}</td><td>{{ item.averageDays | number:'1.0-0' }}</td></tr>
+              }
+              @if (breakdown()!.byResolution.length === 0) {
+                <tr><td colspan="2" class="empty">No data</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+} @else {
+  <div class="empty-state">
+    <mat-icon>bar_chart</mat-icon>
+    <p>No report data available.</p>
+  </div>
+}

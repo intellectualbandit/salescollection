@@ -1,0 +1,140 @@
+<div class="page-header">
+  <h1>Dashboard</h1>
+  <p>Executive summary and key performance indicators for your real estate portfolio.</p>
+</div>
+
+<div class="toolbar">
+  <mat-form-field appearance="outline" class="project-select">
+    <mat-label>Project</mat-label>
+    <mat-select [value]="selectedProjectId()" (selectionChange)="onProjectChange($event.value)">
+      <mat-option [value]="undefined">All Projects</mat-option>
+      @for (p of projects(); track p.projectId) {
+        <mat-option [value]="p.projectId">{{ p.projectName }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else if (summary()) {
+  <!-- KPI Cards -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <div class="label">Health Assessment</div>
+      <div class="value" [style.color]="getHealthColor(summary()!)">{{ getHealthLabel(summary()!) }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Critical</div>
+      <div class="value text-critical">{{ summary()!.criticalClients }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Warning</div>
+      <div class="value text-warning">{{ summary()!.warningClients }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Watch</div>
+      <div class="value" style="color: #F9A825;">{{ summary()!.watchClients }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">On Track</div>
+      <div class="value text-success">{{ summary()!.okClients }}</div>
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <div class="label">Completion Rate</div>
+      <div class="value">{{ summary()!.completionRatePercent | number:'1.1-1' }}%</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Total Clients</div>
+      <div class="value">{{ summary()!.totalClients }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Active Clients</div>
+      <div class="value">{{ summary()!.activeClients }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Resolved</div>
+      <div class="value text-success">{{ summary()!.resolvedClients }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Avg. Delayed Days</div>
+      <div class="value">{{ summary()!.averageDelayedDays | number:'1.0-0' }}</div>
+    </div>
+  </div>
+
+  <!-- Breakdowns -->
+  @if (breakdown()) {
+    <div class="breakdown-grid">
+      <!-- Delay Reasons -->
+      <div class="breakdown-card">
+        <h3>Top Delay Reasons</h3>
+        <hr class="divider-accent">
+        @if (breakdown()!.byDelayReason.length === 0) {
+          <p class="empty">No data available</p>
+        }
+        @for (item of breakdown()!.byDelayReason; track item.label) {
+          <div class="breakdown-row">
+            <span class="breakdown-label">{{ item.label }}</span>
+            <span class="breakdown-count">{{ item.count }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Pipeline Stages -->
+      <div class="breakdown-card">
+        <h3>By Pipeline Stage</h3>
+        <hr class="divider-accent">
+        @if (breakdown()!.byStage.length === 0) {
+          <p class="empty">No data available</p>
+        }
+        @for (item of breakdown()!.byStage; track item.label) {
+          <div class="breakdown-row">
+            <span class="breakdown-label">{{ item.label }}</span>
+            <span class="breakdown-count">{{ item.count }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Financing Mix -->
+      <div class="breakdown-card">
+        <h3>Financing Mix</h3>
+        <hr class="divider-accent">
+        @if (breakdown()!.byFinancingMix.length === 0) {
+          <p class="empty">No data available</p>
+        }
+        @for (item of breakdown()!.byFinancingMix; track item.label) {
+          <div class="breakdown-row">
+            <span class="breakdown-label">{{ item.label }}</span>
+            <span class="breakdown-count">{{ item.count }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Resolution Analysis -->
+      <div class="breakdown-card">
+        <h3>Resolution Analysis</h3>
+        <hr class="divider-accent">
+        @if (breakdown()!.byResolution.length === 0) {
+          <p class="empty">No data available</p>
+        }
+        @for (item of breakdown()!.byResolution; track item.financingType) {
+          <div class="breakdown-row">
+            <span class="breakdown-label">{{ item.financingType }}</span>
+            <span class="breakdown-count">{{ item.averageDays | number:'1.0-0' }} days</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+} @else {
+  <div class="empty-state">
+    <mat-icon>bar_chart</mat-icon>
+    <p>No dashboard data available.</p>
+  </div>
+}

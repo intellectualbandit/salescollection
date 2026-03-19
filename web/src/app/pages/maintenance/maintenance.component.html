@@ -1,0 +1,238 @@
+<div class="page-header">
+  <h1>Maintenance</h1>
+  <p>Manage projects, pipeline stages, delay reasons, financing types, and activity types.</p>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else {
+  <mat-accordion multi>
+    <!-- Projects -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>business</mat-icon> Projects ({{ projects().length }})
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="inline-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Project Name</mat-label>
+          <input matInput [(ngModel)]="projectName">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <input matInput [(ngModel)]="projectDesc">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="saveProject()">
+          {{ editingProjectId ? 'Update' : 'Add' }}
+        </button>
+      </div>
+
+      @for (p of projects(); track p.projectId) {
+        <div class="list-item">
+          <div class="item-info">
+            <strong>{{ p.projectName }}</strong>
+            @if (p.description) {
+              <span class="item-desc">{{ p.description }}</span>
+            }
+          </div>
+          <div class="item-actions">
+            <button mat-icon-button (click)="expandProject(p.projectId)" matTooltip="View Units">
+              <mat-icon>apartment</mat-icon>
+            </button>
+            <button mat-icon-button (click)="editProject(p)"><mat-icon>edit</mat-icon></button>
+            <button mat-icon-button (click)="deleteProject(p)"><mat-icon>delete</mat-icon></button>
+          </div>
+        </div>
+
+        @if (expandedProjectId === p.projectId) {
+          <div class="units-section">
+            <div class="inline-form small">
+              <mat-form-field appearance="outline">
+                <mat-label>Unit Label</mat-label>
+                <input matInput [(ngModel)]="unitLabel">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Type</mat-label>
+                <input matInput [(ngModel)]="unitType" placeholder="Horizontal / Vertical">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>TCP</mat-label>
+                <input matInput type="number" [(ngModel)]="unitTcp">
+              </mat-form-field>
+              <button mat-raised-button color="primary" (click)="saveUnit()">Add Unit</button>
+            </div>
+
+            @for (u of projectUnits(); track u.unitId) {
+              <div class="list-item unit-item">
+                <div class="item-info">
+                  <span>{{ u.unitLabel }}</span>
+                  <span class="item-desc">{{ u.unitType }} &bull; {{ formatCurrency(u.totalContractPrice) }}</span>
+                </div>
+                <button mat-icon-button (click)="deleteUnit(u.unitId)"><mat-icon>delete</mat-icon></button>
+              </div>
+            }
+
+            @if (projectUnits().length === 0) {
+              <p class="empty">No units found for this project.</p>
+            }
+          </div>
+        }
+      }
+    </mat-expansion-panel>
+
+    <!-- Stages -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>linear_scale</mat-icon> Pipeline Stages ({{ stages().length }})
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="inline-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Stage Name</mat-label>
+          <input matInput [(ngModel)]="stageName">
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width:120px">
+          <mat-label>Sort Order</mat-label>
+          <input matInput type="number" [(ngModel)]="stageSortOrder">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="saveStage()">
+          {{ editingStageId ? 'Update' : 'Add' }}
+        </button>
+      </div>
+
+      @for (s of stages(); track s.stageId) {
+        <div class="list-item">
+          <div class="item-info">
+            <strong>{{ s.stageName }}</strong>
+            <span class="item-desc">Order: {{ s.sortOrder }}</span>
+          </div>
+          <div class="item-actions">
+            <button mat-icon-button (click)="editStage(s)"><mat-icon>edit</mat-icon></button>
+            <button mat-icon-button (click)="deleteStage(s.stageId)"><mat-icon>delete</mat-icon></button>
+          </div>
+        </div>
+      }
+    </mat-expansion-panel>
+
+    <!-- Delay Reasons -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>report_problem</mat-icon> Delay Reasons ({{ delayReasons().length }})
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="inline-form">
+        <mat-form-field appearance="outline" class="flex-grow">
+          <mat-label>Reason Name</mat-label>
+          <input matInput [(ngModel)]="reasonName">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="saveReason()">
+          {{ editingReasonId ? 'Update' : 'Add' }}
+        </button>
+      </div>
+
+      @for (r of delayReasons(); track r.delayReasonId) {
+        <div class="list-item">
+          <span>{{ r.reasonName }}</span>
+          <div class="item-actions">
+            <button mat-icon-button (click)="editReason(r)"><mat-icon>edit</mat-icon></button>
+            <button mat-icon-button (click)="deleteReason(r.delayReasonId)"><mat-icon>delete</mat-icon></button>
+          </div>
+        </div>
+      }
+    </mat-expansion-panel>
+
+    <!-- Financing Types -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>account_balance_wallet</mat-icon> Financing Types ({{ financingTypes().length }})
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="inline-form">
+        <mat-form-field appearance="outline" class="flex-grow">
+          <mat-label>Type Name</mat-label>
+          <input matInput [(ngModel)]="ftName">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="saveFt()">
+          {{ editingFtId ? 'Update' : 'Add' }}
+        </button>
+      </div>
+
+      @for (ft of financingTypes(); track ft.financingTypeId) {
+        <div class="list-item">
+          <span>{{ ft.typeName }}</span>
+          <div class="item-actions">
+            <button mat-icon-button (click)="editFt(ft)"><mat-icon>edit</mat-icon></button>
+            <button mat-icon-button (click)="deleteFt(ft.financingTypeId)"><mat-icon>delete</mat-icon></button>
+          </div>
+        </div>
+      }
+    </mat-expansion-panel>
+
+    <!-- Activity Types -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>event_note</mat-icon> Activity Types ({{ activityTypes().length }})
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="inline-form">
+        <mat-form-field appearance="outline" style="width:120px">
+          <mat-label>Code</mat-label>
+          <input matInput [(ngModel)]="atCode">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-grow">
+          <mat-label>Type Name</mat-label>
+          <input matInput [(ngModel)]="atName">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="saveAt()">
+          {{ editingAtId ? 'Update' : 'Add' }}
+        </button>
+      </div>
+
+      @for (at of activityTypes(); track at.activityTypeId) {
+        <div class="list-item">
+          <div class="item-info">
+            <strong>{{ at.typeName }}</strong>
+            <span class="item-desc">Code: {{ at.code }}</span>
+          </div>
+          <div class="item-actions">
+            @if (at.code !== 'note' && at.code !== 'system') {
+              <button mat-icon-button (click)="editAt(at)"><mat-icon>edit</mat-icon></button>
+              <button mat-icon-button (click)="deleteAt(at.activityTypeId)"><mat-icon>delete</mat-icon></button>
+            }
+          </div>
+        </div>
+      }
+    </mat-expansion-panel>
+
+    <!-- Account -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>person</mat-icon> Account
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="account-section">
+        @if (auth.user(); as u) {
+          <p><strong>Logged in as:</strong> {{ u.firstName }} {{ u.lastName }}</p>
+          <p><strong>Employee ID:</strong> {{ u.employeeId }}</p>
+        }
+        <button mat-raised-button color="warn" (click)="auth.logout()">
+          <mat-icon>logout</mat-icon> Sign Out
+        </button>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+}

@@ -1,0 +1,121 @@
+<div class="page-header">
+  <h1>Executive Report</h1>
+  <p>High-level portfolio overview and key metrics for executive stakeholders.</p>
+</div>
+
+<div class="toolbar">
+  <mat-form-field appearance="outline" class="project-select">
+    <mat-label>Project</mat-label>
+    <mat-select [value]="selectedProjectId()" (selectionChange)="onProjectChange($event.value)">
+      <mat-option [value]="undefined">All Projects</mat-option>
+      @for (p of projects(); track p.projectId) {
+        <mat-option [value]="p.projectId">{{ p.projectName }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else if (summary()) {
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <mat-icon>account_balance</mat-icon>
+      <div class="kpi-value">{{ summary()!.totalClients }}</div>
+      <div class="kpi-label">Total Accounts</div>
+    </div>
+    <div class="kpi-card">
+      <mat-icon class="text-success">check_circle</mat-icon>
+      <div class="kpi-value text-success">{{ soldRate | number:'1.1-1' }}%</div>
+      <div class="kpi-label">Sold Rate</div>
+    </div>
+    <div class="kpi-card">
+      <mat-icon>local_shipping</mat-icon>
+      <div class="kpi-value">{{ summary()!.completionRatePercent | number:'1.1-1' }}%</div>
+      <div class="kpi-label">Completion Rate</div>
+    </div>
+    <div class="kpi-card">
+      <mat-icon class="text-critical">cancel</mat-icon>
+      <div class="kpi-value text-critical">{{ cancellationRate | number:'1.1-1' }}%</div>
+      <div class="kpi-label">Cancellation Rate</div>
+    </div>
+  </div>
+
+  <hr class="divider-accent">
+
+  <!-- Status Summary Table -->
+  <div class="data-table-container">
+    <table class="exec-table">
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Count</th>
+          <th>%</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="status-dot" style="background:#D32F2F"></span> Critical</td>
+          <td>{{ summary()!.criticalClients }}</td>
+          <td>{{ summary()!.totalClients ? (summary()!.criticalClients / summary()!.totalClients * 100 | number:'1.1-1') : '0.0' }}%</td>
+        </tr>
+        <tr>
+          <td><span class="status-dot" style="background:#ED6C02"></span> Warning</td>
+          <td>{{ summary()!.warningClients }}</td>
+          <td>{{ summary()!.totalClients ? (summary()!.warningClients / summary()!.totalClients * 100 | number:'1.1-1') : '0.0' }}%</td>
+        </tr>
+        <tr>
+          <td><span class="status-dot" style="background:#F9A825"></span> Watch</td>
+          <td>{{ summary()!.watchClients }}</td>
+          <td>{{ summary()!.totalClients ? (summary()!.watchClients / summary()!.totalClients * 100 | number:'1.1-1') : '0.0' }}%</td>
+        </tr>
+        <tr>
+          <td><span class="status-dot" style="background:#2E7D32"></span> On Track</td>
+          <td>{{ summary()!.okClients }}</td>
+          <td>{{ summary()!.totalClients ? (summary()!.okClients / summary()!.totalClients * 100 | number:'1.1-1') : '0.0' }}%</td>
+        </tr>
+        <tr>
+          <td><span class="status-dot" style="background:#0288D1"></span> Resolved</td>
+          <td>{{ summary()!.resolvedClients }}</td>
+          <td>{{ summary()!.totalClients ? (summary()!.resolvedClients / summary()!.totalClients * 100 | number:'1.1-1') : '0.0' }}%</td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>Total</strong></td>
+          <td><strong>{{ summary()!.totalClients }}</strong></td>
+          <td><strong>100%</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pipeline Breakdown -->
+  @if (breakdown()) {
+    <h3 class="section-title">Pipeline Stage Distribution</h3>
+    <div class="data-table-container">
+      <table class="exec-table">
+        <thead>
+          <tr>
+            <th>Stage</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of breakdown()!.byStage; track item.label) {
+            <tr>
+              <td>{{ item.label }}</td>
+              <td>{{ item.count }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+} @else {
+  <div class="empty-state">
+    <mat-icon>assessment</mat-icon>
+    <p>No executive data available.</p>
+  </div>
+}

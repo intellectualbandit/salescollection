@@ -1,0 +1,75 @@
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.project-select { width: 250px; }
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 60px;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.report-section {
+  h3 {
+    color: var(--reamt-primary);
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 12px;
+  }
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    background: #FAFAFA;
+    color: var(--reamt-primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--reamt-primary);
+  }
+
+  td {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #F0F0F0;
+  }
+
+  .empty {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px;
+  color: var(--reamt-text-secondary);
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .project-select { width: 100%; }
+  .toolbar { justify-content: stretch; }
+}

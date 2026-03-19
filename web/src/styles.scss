@@ -1,0 +1,189 @@
+@use '@angular/material' as mat;
+
+// REAMT Custom Theme - Dark Maroon/Red
+$reamt-primary: #8B0000;
+$reamt-primary-light: #B71C1C;
+$reamt-primary-dark: #5C0000;
+$reamt-accent: #D32F2F;
+$reamt-bg-accent: #FDE8E8;
+$reamt-bg-light: #FFF5F5;
+$reamt-text-primary: #333333;
+$reamt-text-secondary: #666666;
+$reamt-border: #E0E0E0;
+$reamt-success: #2E7D32;
+$reamt-warning: #ED6C02;
+$reamt-info: #0288D1;
+$reamt-critical: #D32F2F;
+
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$red-palette,
+      tertiary: mat.$violet-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+// Override Material primary colors to dark maroon
+:root {
+  --reamt-primary: #{$reamt-primary};
+  --reamt-primary-light: #{$reamt-primary-light};
+  --reamt-primary-dark: #{$reamt-primary-dark};
+  --reamt-accent: #{$reamt-accent};
+  --reamt-bg-accent: #{$reamt-bg-accent};
+  --reamt-bg-light: #{$reamt-bg-light};
+  --reamt-text-primary: #{$reamt-text-primary};
+  --reamt-text-secondary: #{$reamt-text-secondary};
+  --reamt-border: #{$reamt-border};
+  --reamt-success: #{$reamt-success};
+  --reamt-warning: #{$reamt-warning};
+  --reamt-info: #{$reamt-info};
+  --reamt-critical: #{$reamt-critical};
+  --reamt-sidebar-width: 250px;
+  --reamt-sidebar-collapsed-width: 60px;
+  --reamt-header-height: 56px;
+
+  --mat-sys-primary: #{$reamt-primary};
+  --mat-sys-on-primary: #FFFFFF;
+  --mat-sys-primary-container: #{$reamt-bg-accent};
+  --mat-sys-on-primary-container: #{$reamt-primary-dark};
+  --mat-sys-secondary: #{$reamt-primary-light};
+  --mat-sys-surface: #FFFFFF;
+  --mat-sys-on-surface: #{$reamt-text-primary};
+  --mat-sys-error: #{$reamt-critical};
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #F5F5F5;
+  color: $reamt-text-primary;
+}
+
+// Global Material Overrides
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary {
+  --mdc-filled-button-container-color: #{$reamt-primary};
+  --mdc-filled-button-label-text-color: #FFFFFF;
+}
+
+.mat-mdc-outlined-button.mat-primary {
+  --mdc-outlined-button-label-text-color: #{$reamt-primary};
+  --mdc-outlined-button-outline-color: #{$reamt-primary};
+}
+
+.mat-mdc-fab.mat-primary,
+.mat-mdc-mini-fab.mat-primary {
+  --mdc-fab-container-color: #{$reamt-primary};
+  --mat-fab-foreground-color: #FFFFFF;
+}
+
+.mat-mdc-tab-group {
+  --mat-tab-header-active-focus-indicator-color: #{$reamt-primary};
+  --mat-tab-header-active-label-text-color: #{$reamt-primary};
+}
+
+.mat-mdc-chip.mat-primary {
+  --mdc-chip-elevated-container-color: #{$reamt-bg-accent};
+  --mdc-chip-label-text-color: #{$reamt-primary};
+}
+
+// Scrollbar styling
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F0F0F0;
+}
+::-webkit-scrollbar-thumb {
+  background: #CCC;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+// Utility classes
+.text-primary { color: $reamt-primary !important; }
+.text-success { color: $reamt-success !important; }
+.text-warning { color: $reamt-warning !important; }
+.text-critical { color: $reamt-critical !important; }
+.bg-accent { background-color: $reamt-bg-accent !important; }
+
+.page-header {
+  background: $reamt-bg-accent;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+
+  h1 {
+    color: $reamt-primary;
+    margin: 0 0 8px;
+    font-size: 1.8rem;
+    font-weight: 500;
+  }
+  p {
+    color: $reamt-text-secondary;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+}
+
+.divider-accent {
+  border: none;
+  height: 3px;
+  background: $reamt-primary;
+  margin: 16px 0;
+}
+
+.summary-cards {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  flex: 1;
+  min-width: 160px;
+  border: 1px solid $reamt-border;
+  border-radius: 8px;
+  padding: 16px;
+  background: #FFFFFF;
+
+  .label {
+    font-size: 0.85rem;
+    color: $reamt-text-secondary;
+    margin-bottom: 4px;
+  }
+  .value {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: $reamt-primary;
+  }
+}
+
+.data-table-container {
+  overflow-x: auto;
+  background: #FFFFFF;
+  border-radius: 8px;
+  border: 1px solid $reamt-border;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .summary-cards {
+    flex-direction: column;
+  }
+  .summary-card {
+    min-width: auto;
+  }
+  .page-header h1 {
+    font-size: 1.4rem;
+  }
+}

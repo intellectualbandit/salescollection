@@ -1,0 +1,28 @@
+<header class="header" [class.collapsed]="sidebarCollapsed">
+  <div class="header-left">
+    <button mat-icon-button (click)="toggleSidebar.emit()" class="menu-toggle">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+
+  <div class="header-center">
+    <span class="company-name">Myvan Properties and Development Inc.</span>
+  </div>
+
+  <div class="header-right">
+    <button mat-button [matMenuTriggerFor]="userMenu" class="user-btn">
+      <mat-icon>person_outline</mat-icon>
+      <span class="user-name">{{ userName }}</span>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item disabled>
+        <mat-icon>person</mat-icon>
+        <span>{{ userName }}</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Sign Out</span>
+      </button>
+    </mat-menu>
+  </div>
+</header>
